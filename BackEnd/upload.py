@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Blueprint
 from pymongo import MongoClient
 from urllib.parse import quote_plus
 from werkzeug.utils import secure_filename
@@ -11,19 +11,19 @@ mongo_uri = f"mongodb+srv://{quote_plus(username)}:{quote_plus(password)}@cluste
 client = MongoClient(mongo_uri)
 db = client["ABE"]
 
-UPLOAD_IMG_FOLDER = r'D:/University/Flask_Tutorial/Uploaded/Image'
-UPLOAD_FILE_FOLDER = r'D:/University/Flask_Tutorial/Uploaded/File'
+UPLOAD_IMG_FOLDER = r'BackEnd/Uploaded/File'
+UPLOAD_FILE_FOLDER = r'BackEnd/Uploaded/Image'
 ALLOWED_IMG_EXTENSIONS = set(['jpg', 'jpeg', 'png', 'gif'])
 ALLOWED_FILE_EXTENSIONS = set(['txt', 'doc', 'docx', 'ppt', 'pptx', 'pdf', 'xls', 'xlsx'])
 
 def allowed_file(filename, allowed_extensions):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
-app = Flask(__name__)
-app.config['UPLOAD_IMG_FOLDER'] = UPLOAD_IMG_FOLDER
-app.config['UPLOAD_FILE_FOLDER'] = UPLOAD_FILE_FOLDER
+test = Blueprint("file",__name__)
+# app.config['UPLOAD_IMG_FOLDER'] = UPLOAD_IMG_FOLDER
+# app.config['UPLOAD_FILE_FOLDER'] = UPLOAD_FILE_FOLDER
 
-@app.route('/upload', methods=['POST'])
+@test.route('/upload', methods=['POST'])
 def upload():
     if 'file' not in request.files:
         return jsonify({"message": "Không tìm thấy tệp"}), 400
@@ -43,9 +43,9 @@ def upload():
     else:
         return jsonify({"message": "Phần mở rộng tệp không được hỗ trợ"}), 400
 
-if __name__ == '__main__':
-    if not os.path.exists(UPLOAD_IMG_FOLDER):
-        os.makedirs(UPLOAD_IMG_FOLDER)
-    if not os.path.exists(UPLOAD_FILE_FOLDER):
-        os.makedirs(UPLOAD_FILE_FOLDER)
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     if not os.path.exists(UPLOAD_IMG_FOLDER):
+#         os.makedirs(UPLOAD_IMG_FOLDER)
+#     if not os.path.exists(UPLOAD_FILE_FOLDER):
+#         os.makedirs(UPLOAD_FILE_FOLDER)
+#     app.run(debug=True)
