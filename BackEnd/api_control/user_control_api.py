@@ -20,6 +20,7 @@ def login():
         }, settings.SECRET_KEY, algorithm= settings.JWT_ALGORITHM)
             return {"ok": True, "access_token": token}
     return {"ok": False}
+
 @user_api.route("/register", methods =["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -33,7 +34,7 @@ def register():
                 }, 400
             else:
                 if data["username"] is None or data["password"] is None or data["fullname"] is None:
-                    return {"ok": False}
+                    return {"message": False}
                 user, status = User.register(**data)
                 print(user)
                 if status:
@@ -49,14 +50,47 @@ def register():
             "error": str(e),
             "data": None
         }, 500
-@user_api.route("/account/<username>")
+@user_api.route("/<username>/account", methods = ["PUT"])
 @token_required
-def account(user, username):
-    #ham nayf dung dder sur thong tin thong tin nguoi dung
-    return {"hello":"heleleleel"}
-
+def account(user_id, username):
+    data = request.get_json()
+    if User.update_user(user_id, **data):
+        return {"message":"Account updated successfully"}, 200
+    else:
+        return {"message":"Error updating the account"}, 400
+    
+@user_api.route("/get_users", methods=["GET"])
+@token_required
+def get_users(user_id):
+    if str(user_id) == "653e6ea6cc9dc6413c4fad06":
+        users, status = User.get_all_user()
+        if status:
+            return {
+                "message": "All users fetched successfully",
+                "data": users
+            }
+        return {
+            "message": "Failed to fetch users",
+            "data": None
+        }, 500
+    return {
+        "message": "User is not an admin",
+        "data": None,
+        "error": "Unauthorized"
+    }, 401
+    
+@user_api.route("<username>/delaccount/<user_id>", methods = ["DELETE"])
+@token_required
+def delaccount(user_id, username):
+    data = request.get_json() 
+    if User.delete_user(user_id, **data):
+        return {"message":"Account deleted successfully"}, 200
+    else:
+        return {"message":"Error deleting the account"}, 400
+    
 @user_api.route("/<username>")
 @token_required
 def user_route(user_id, username):
     #ham nayf lay cac thong tin ve cac nban tin thong tin nguoiw dungf
-    return {"hello":user_id}
+    return {username:user_id}
+
