@@ -4,6 +4,7 @@ from database.handerror import encrypt
 class User(Document):
     username = StringField(required=True, max_length=50)
     password = StringField(required=True)
+    email = StringField(required=True)
     fullname = StringField()
     dob = StringField()
     citizenshipid = StringField()
@@ -18,7 +19,7 @@ class User(Document):
             return True
         return False
     
-    def register(username, password, fullname, dob="", citizenshipid="", hometown="", phonenumber="", key_id=""):
+    def register(username, password, email, fullname="", dob="", citizenshipid="", hometown="", phonenumber="", key_id=""):
         user = User.objects(username = username).first()
         if user is not None:
             return None, False
@@ -27,7 +28,8 @@ class User(Document):
                 user = User(
                 username=username,
                 password= encrypt(username+password),
-                fullname= fullname,
+                email= email,
+                fullname= "",
                 dob="",
                 citizenshipid="",
                 hometown="",
@@ -49,6 +51,7 @@ class User(Document):
             users.append({
                 "id": str(user.id),
                 "username": user.username,
+                "email": user.email,
                 "fullname": user.fullname,
                 "dob": user.dob,
                 "citizenshipid": user.citizenshipid,
@@ -57,7 +60,7 @@ class User(Document):
                 })
         return users, True
     
-    def update_user(_id, fullname, dob="", citizenshipid="", hometown="", phonenumber=""):
+    def update_user(_id, fullname="", dob="", citizenshipid="", hometown="", phonenumber=""):
         user = User.objects(id = _id).first()
         if user is None:
             return False
