@@ -1,5 +1,4 @@
 from mongoengine import connect
-
 # Replace <password> and other connection details with your MongoDB configuration
 try:
     username = 'chukhanhhung'

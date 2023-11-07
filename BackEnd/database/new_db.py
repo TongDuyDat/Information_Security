@@ -2,6 +2,7 @@ import datetime
 from mongoengine import Document, StringField, IntField, ReferenceField,  DateTimeField, Q
 from database.handerror import encrypt
 from database.user_db import User
+from config import settings
 class Post(Document):
     title = StringField(required=True)
     content = StringField(required=True)
@@ -34,22 +35,38 @@ class Post(Document):
 
     @classmethod
     def get_all_post(cls):
-        posts = []
         # try:
-        for post in cls.objects().order_by("created"):
-            posts.append({
-                "id": str(post.id),
-                "title": post.title,
-                "content": post.content,
-                "image": post.image,
-                "post_type": post.post_type,
-                # "username": post.user_id.name,
-                "created": str(post.created)
-                })
-        return posts, True
+            from database.file_db import File
+            posts = []
+            for post in cls.objects().order_by("created"):
+                files = File.get_files_by_post_id(post.id)
+                url_image = []
+                url_file = []
+                if files is not None:
+                    for f in files:
+                        if f["type"]!="Image":
+                            file_url = settings.HOST+"api/get_file?id=" + str(f["id"])+"&download"
+                            url_file.append(file_url)
+                        else:
+                            img_url = settings.HOST+"api/get_file?id="+str(f["id"])
+                            url_image.append(img_url)
+                posts.append({
+                    "id": str(post.id),
+                    "title": post.title,
+                    "content": post.content,
+                    "image": url_image,
+                    "files": url_file,
+                    "post_type": post.post_type,
+                    # "username": post.user_id.name,
+                    "created": str(post.created)
+                    })
+            return posts, True
         # except Exception as e:
         #     return None, False
-
+    @classmethod
+    def get_post_by_id(cls, id):
+        post = cls.objects(id = id)
+        return post!=None
     @classmethod
     def search_posts(cls, query):
         posts = []

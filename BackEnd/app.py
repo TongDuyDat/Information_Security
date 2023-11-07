@@ -7,12 +7,13 @@ from flask import Blueprint
 from upload import test
 from api_control.register_api import api
 from flask_jwt_extended import JWTManager
-
+from flask_cors import CORS
 def create_app():
     app = Flask(__name__)
     app.register_blueprint(api)
     app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Replace with your secret key
     jwt = JWTManager(app)
+    CORS(app)
     return app
 
 if __name__ == '__main__':
