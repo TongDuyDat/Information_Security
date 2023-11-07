@@ -35,7 +35,7 @@ class Post(Document):
 
     @classmethod
     def get_all_post(cls):
-        # try:
+        try:
             from database.file_db import File
             posts = []
             for post in cls.objects().order_by("created"):
@@ -61,8 +61,8 @@ class Post(Document):
                     "created": str(post.created)
                     })
             return posts, True
-        # except Exception as e:
-        #     return None, False
+        except Exception as e:
+            return None, False
     @classmethod
     def get_post_by_id(cls, id):
         post = cls.objects(id = id)
