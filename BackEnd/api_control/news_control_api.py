@@ -31,7 +31,7 @@ def create_post(user_id):
                 if status:
                     return {
                         "message": "Post successfully created",
-                        "data": {"post_id ": str(post.id)}
+                        "data": {"post_id": str(post.id)}
                     }, 201
                 else:
                     return {

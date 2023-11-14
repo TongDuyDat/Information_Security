@@ -16,7 +16,7 @@ def login():
         if User.login(user, passwd):
             token = jwt.encode({
             'username': user,
-            'exp' : datetime.utcnow() + timedelta(minutes = 30)
+            'exp' : datetime.utcnow() + timedelta(minutes = 30000000)
         }, settings.SECRET_KEY, algorithm= settings.JWT_ALGORITHM)
             return {"ok": True, "access_token": token}
     return {"ok": False}

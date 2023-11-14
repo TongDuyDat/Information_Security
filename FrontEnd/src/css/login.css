@@ -1,0 +1,45 @@
+.login{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background: url('./nen.jpg');
+    background-size: contain;
+}
+
+.form{
+    background-color: azure;
+    box-shadow: 0px 8px 32px 0px rgb(0,0,255,0.3);
+    backdrop-filter: 3px;
+    padding: 0px 16px 16px 16px;
+    border-radius: 30px;
+    height: 300px;
+     width: 400px;
+}
+.dk{
+    border: none;
+    background-color: azure;
+    padding: 10px 0px 0px 0px;
+    color: red;
+    
+}
+.pass{
+    width: 350px;
+    height: 30px;
+   
+}
+.email{
+    width: 350px;
+    height: 30px;
+    
+}
+.a{
+    margin-left: 80px;
+}
+.dn{
+    margin-left: 60px;
+}.khoa{
+    margin-left: 10px;
+    width: 120px;
+}
