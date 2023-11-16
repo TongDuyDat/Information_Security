@@ -33,7 +33,7 @@ def register():
                     "error": "Bad request"
                 }, 400
             else:
-                if data["username"] is None or data["password"] is None or data["email"] is None:
+                if data["username"] is None or data["password"] is None or data["email"] is None or data["fullname"] is None or data["dob"] is None or data["sex"] is None or data["hometown"] is None:
                     return {"message": False}
                 user, status = User.register(**data)
                 print(user)

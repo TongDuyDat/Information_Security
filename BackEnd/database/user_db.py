@@ -5,11 +5,12 @@ class User(Document):
     username = StringField(required=True, max_length=50)
     password = StringField(required=True)
     email = StringField(required=True)
-    fullname = StringField()
-    dob = StringField()
-    citizenshipid = StringField()
-    hometown = StringField()
+    fullname = StringField(required=True)
+    dob = StringField(required=True)
+    sex = StringField(required=True)
+    hometown = StringField(required=True)
     phonenumber = StringField()
+    citizenshipid = StringField()
     key_id = StringField()
     meta = {"collection": "USERS"}
     
@@ -19,7 +20,7 @@ class User(Document):
             return True
         return False
     
-    def register(username, password, email, fullname="", dob="", citizenshipid="", hometown="", phonenumber="", key_id=""):
+    def register(username, password, email, fullname, dob, sex, hometown, phonenumber="", citizenshipid="", key_id=""):
         user = User.objects(username = username).first()
         if user is not None:
             return None, False
@@ -29,11 +30,12 @@ class User(Document):
                 username=username,
                 password= encrypt(username+password),
                 email= email,
-                fullname= "",
-                dob="",
-                citizenshipid="",
-                hometown="",
-                phonenumber="",
+                fullname= fullname,
+                dob= dob,
+                sex = sex,
+                hometown= hometown,
+                phonenumber= "",
+                citizenshipid = "",
                 key_id=""
                 )
                 user.save()
@@ -60,12 +62,13 @@ class User(Document):
                 })
         return users, True
     
-    def update_user(_id, fullname="", dob="", citizenshipid="", hometown="", phonenumber=""):
+    def update_user(_id, fullname, dob, sex, hometown, phonenumber="", citizenshipid=""):
         user = User.objects(id = _id).first()
         if user is None:
             return False
         user.fullname = fullname
         user.dob = dob
+        user.sex = sex
         user.citizenshipid = citizenshipid
         user.hometown = hometown
         user.phonenumber = phonenumber
