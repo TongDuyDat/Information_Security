@@ -9,6 +9,7 @@ class User(Document):
     dob = StringField(required=True)
     sex = StringField(required=True)
     hometown = StringField(required=True)
+    group = StringField(required=True)
     phonenumber = StringField()
     citizenshipid = StringField()
     key_id = StringField()
@@ -20,7 +21,7 @@ class User(Document):
             return True
         return False
     
-    def register(username, password, email, fullname, dob, sex, hometown, phonenumber="", citizenshipid="", key_id=""):
+    def register(username, password, email, fullname, dob, sex, hometown, group, phonenumber="", citizenshipid="", key_id=""):
         user = User.objects(username = username).first()
         if user is not None:
             return None, False
@@ -34,6 +35,7 @@ class User(Document):
                 dob= dob,
                 sex = sex,
                 hometown= hometown,
+                group= group,
                 phonenumber= "",
                 citizenshipid = "",
                 key_id=""
@@ -56,22 +58,25 @@ class User(Document):
                 "email": user.email,
                 "fullname": user.fullname,
                 "dob": user.dob,
-                "citizenshipid": user.citizenshipid,
+                "sex": user.sex,
                 "hometown": user.hometown,
+                "group": user.group,
+                "citizenshipid": user.citizenshipid,
                 "phonenumber": user.phonenumber
                 })
         return users, True
     
-    def update_user(_id, fullname, dob, sex, hometown, phonenumber="", citizenshipid=""):
+    def update_user(_id, fullname, dob, sex, hometown, group, phonenumber="", citizenshipid=""):
         user = User.objects(id = _id).first()
         if user is None:
             return False
         user.fullname = fullname
         user.dob = dob
         user.sex = sex
-        user.citizenshipid = citizenshipid
         user.hometown = hometown
+        user.group = group
         user.phonenumber = phonenumber
+        user.citizenshipid = citizenshipid
         user.save()
         return True
     
@@ -81,3 +86,5 @@ class User(Document):
             user.delete()
             return True
         return False
+
+    

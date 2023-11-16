@@ -19,7 +19,7 @@ function Register(){
       });
       console.log(response.data);
       if(response.data){
-       message.success("đăng ký tài khoản thành công");
+       message.success("Đăng ký tài khoản thành công!");
         navigation('/');
     }
     
@@ -33,12 +33,12 @@ return <div className='register' >
     <div  >
         <Button className='back' onClick={()=> navigation('/')} ></Button>
     </div>
-       <Typography.Title ><span className='title'>CREATE ACCOUNT</span> </Typography.Title>
+       <Typography.Title ><span className='title'>TẠO MỚI TÀI KHOẢN</span> </Typography.Title>
     <Form.Item name={'emaildk'}>
-            <input placeholder='Email' type='email'  className='a1'/>
+            <input placeholder='Nhập email' type='email'  className='a1'/>
         </Form.Item>
         <Form.Item name={'namedk'}>
-            <input placeholder='User name' type='text' className='a1' name='namedk' />
+            <input placeholder='Tên đăng nhập' type='text' className='a1' name='namedk' />
         </Form.Item>
         <Form.Item name={'passdk'}>
             <input placeholder='Mật khẩu' type='password'  className='a1'/>

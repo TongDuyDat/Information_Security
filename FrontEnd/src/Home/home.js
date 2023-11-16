@@ -137,7 +137,7 @@ const Home = () => {
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']} items={items1} />
         <div className='find' style={{ marginLeft: '400px' }}>
           <form >
-            <Input placeholder='nhập nội dung tìm kiếm' type='text' />
+            <Input placeholder='Nhập nội dung tìm kiếm' type='text' />
           </form>
         </div>
         <div background='#00FFFF'>
@@ -155,7 +155,7 @@ const Home = () => {
         <Modal
           width={'700px'}
           open={open}
-          title="Đăng Bài"
+          title="Đăng bài"
           onOk={handleOk}
           onCancel={handleCancel}
           footer={[

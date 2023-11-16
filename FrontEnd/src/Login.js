@@ -19,9 +19,9 @@ function Login(){
           console.log(response.data);
           if(response.data.access_token){
             localStorage.setItem('accessToken', response.data.access_token);
-            message.success("đăng nhập thành công");
+            message.success("Đăng nhập thành công!");
             navigation('/Home')
-          } else message.error("tên tài khoản hoặc mật khẩu không đúng");
+          } else message.error("Tên tài khoản hoặc mật khẩu không chính xác!");
         } catch (error) {
          
           console.error("Error making the request:", error);
@@ -30,12 +30,12 @@ function Login(){
   const navigation = useNavigate();
 return <div className='login'>
  <Form className='form' form={form} onFinish={getData}>
- <Typography.Title >CHÀO MỪNG BẠN</Typography.Title>
+ <Typography.Title >TRANG ĐĂNG NHẬP</Typography.Title>
     <Form.Item  name={'myemail'} > 
-        <input placeholder='nhập tên tài khoản' className='email'/>
+        <input placeholder='Nhập tên tài khoản' className='email'/>
     </Form.Item>
     <Form.Item  name={'mypass'} > 
-        <input placeholder='nhập mật khẩu' type='password' className='pass'/>
+        <input placeholder='Nhập mật khẩu' type='password' className='pass'/>
     </Form.Item>
    <div className='dn'> <Button type='primary' htmlType='submit' >
         ĐĂNG NHẬP
@@ -45,7 +45,7 @@ return <div className='login'>
     </Button>
     </div>
     <div className='a' >
-       bạn chưa có tài khoản ? <Button className='dk' onClick={()=> navigation("/dangky") }>đăng ký</Button>
+       Bạn chưa có tài khoản ? <Button className='dk' onClick={()=> navigation("/dangky") }>Đăng ký ngay</Button>
     </div>
  </Form>
 </div>
