@@ -1,5 +1,6 @@
 from mongoengine import Document, StringField, IntField
 from database.handerror import encrypt
+from datetime import datetime
 
 class User(Document):
     username = StringField(required=True, max_length=50)
@@ -86,5 +87,52 @@ class User(Document):
             user.delete()
             return True
         return False
+    
+    @staticmethod
+    def map_values(value, value_mapping):
+        return value_mapping.get(value, None)
+
+    def get_attributes_by_id(_id):
+        user = User.objects(id=_id).first()
+        if user:
+            sex_mapping = {"Nam": 1, "Nữ": 2}
+            hometown_mapping = {
+                "Bá Thước": 3,
+                "Cẩm Thủy": 4,
+                "Đông Sơn": 5,
+                "Hà Trung": 6,
+                "Hậu Lộc": 7,
+                "Hoằng Hóa": 8,
+                "Lang Chánh": 9,
+                "Nga Sơn": 10,
+                "Ngọc Lặc": 11,
+                "Như Xuân": 12,
+                "Nông Cống": 13,
+                "Quan Hóa": 14,
+                "Quảng Xương": 15,
+                "Thạch Thành": 16,
+                "Thiệu Hóa": 17,
+                "Thọ Xuân": 18,
+                "Thường Xuân": 19,
+                "Tĩnh Gia": 20,
+                "Vĩnh Lộc": 21,
+                "Yên Định": 22
+            } 
+            group_maping = {
+                "Tự nhiên": 23,
+                "Xã hội": 24,
+                "Thể dục": 25,
+                "Ngoại ngữ": 26
+            }
+
+            user_attributes = [
+                sex_mapping.get(user.sex, None),
+                hometown_mapping.get(user.hometown, None),
+                group_maping.get(user.group, None)
+            ]
+
+            return user_attributes, True
+
+        return None, False
 
     
