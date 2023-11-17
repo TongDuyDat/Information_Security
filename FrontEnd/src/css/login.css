@@ -27,18 +27,20 @@
 .pass{
     width: 350px;
     height: 30px;
+    border-radius: 10px;
    
 }
 .email{
     width: 350px;
     height: 30px;
+    border-radius: 10px;
     
 }
 .a{
     margin-left: 80px;
 }
 .dn{
-    margin-left: 60px;
+    margin-left: 130px;
 }.khoa{
     margin-left: 10px;
     width: 120px;

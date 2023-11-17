@@ -1,5 +1,6 @@
 import { Button, Form, Space, Typography,Checkbox, message } from 'antd';
 import './css/login.css';
+import './css/logo.jpg';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Item from 'antd/es/list/Item';
@@ -30,22 +31,21 @@ function Login(){
   const navigation = useNavigate();
 return <div className='login'>
  <Form className='form' form={form} onFinish={getData}>
- <Typography.Title >CHÀO MỪNG BẠN</Typography.Title>
-    <Form.Item  name={'myemail'} > 
-        <input placeholder='nhập tên tài khoản' className='email'/>
+    <Typography.Title style={{marginLeft:'100px', fontStyle:'italic', color:'#0000FF'}}>Đăng Nhập</Typography.Title>
+    <Form.Item  name={'myemail'} label='Username' > 
+        <input placeholder='Nhập tên tài khoản' className='email' style={{width:'280px'}} />
     </Form.Item>
-    <Form.Item  name={'mypass'} > 
-        <input placeholder='nhập mật khẩu' type='password' className='pass'/>
+    <Form.Item  name={'mypass'} label='Password' > 
+        <input placeholder='Nhập mật khẩu' type='password' className='pass' style={{marginLeft:'2px', width:'280px'}}/>
     </Form.Item>
-   <div className='dn'> <Button type='primary' htmlType='submit' >
+   
+   <div className='dn'> <Button type='primary' htmlType='submit'  >
         ĐĂNG NHẬP
     </Button>
-    <Button type='primary' htmlType='submit' className='khoa' onClick={() => navigation("/key")} >
-      CẤP KHÓA
-    </Button>
+   
     </div>
     <div className='a' >
-       bạn chưa có tài khoản ? <Button className='dk' onClick={()=> navigation("/dangky") }>đăng ký</Button>
+       bạn chưa có tài khoản ? <Button className='dk' onClick={()=> navigation("/dangky") }>Đăng Ký</Button>
     </div>
  </Form>
 </div>

@@ -33,7 +33,7 @@ def register():
                     "error": "Bad request"
                 }, 400
             else:
-                if data["username"] is None or data["password"] is None or data["email"] is None:
+                if data["username"] is None or data["password"] is None or data["email"] is None or data["fullname"] is None or data["dob"] is None or data["sex"] is None or data["hometown"] is None:
                     return {"message": False}
                 user, status = User.register(**data)
                 print(user)
@@ -93,3 +93,16 @@ def delaccount(user_id, username):
 def user_route(user_id, username):
     #ham nayf lay cac thong tin ve cac nban tin thong tin nguoiw dungf
     return {username:user_id}
+
+@user_api.route("/get_attributes/<user_id>", methods=["GET"])
+def get_attributes(user_id):
+        users, status = User.get_attributes_by_id(user_id)
+        if status:
+            return {
+                "data": users
+            }
+        return {
+            "message": "Failed!",
+            "data": None
+        }, 500
+    

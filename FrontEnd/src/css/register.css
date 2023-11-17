@@ -13,15 +13,18 @@
     backdrop-filter: 3px;
     padding: 16px 16px 16px 16px;
     border-radius: 30px;
-    height: 430px;
-     width: 400px;
+    height: 630px;
+    width: 600px;
+    align-items: center;
+    justify-content: center;
+    
 }
 .a1{
     width: 350px;
     height: 30px;
 }
 .dky{
-    margin-left: 130px;
+    margin-left: 40px;
 }
 .tilte{
     margin-left: 50px;

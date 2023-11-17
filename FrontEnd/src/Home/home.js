@@ -1,59 +1,60 @@
 import React, { useEffect, useState } from 'react';
-import { LaptopOutlined, NotificationOutlined, UserOutlined, EditOutlined } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme, Form, Input, Button, FloatButton, message, Upload, Card, Row, Col } from 'antd';
+import { UserOutlined, FileTextOutlined } from '@ant-design/icons';
+import { Layout, Menu, Form, Input, Button, FloatButton, message, Card, Row, Col, Select, Modal, theme } from 'antd';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { FileTextOutlined, FileAddOutlined } from '@ant-design/icons';
-import { Select, Modal } from 'antd';
-
-
 
 const storedToken = localStorage.getItem('accessToken');
 
-const { Header, Content, Sider } = Layout;
-const items1 = ['Trang chủ', 'Tổ tự nhiên', 'Tổ xã hội', 'Tổ thể dục', 'Tổ ngoại ngữ'].map((key) => ({
-  key,
-  label: `${key}`,
-  
-}));
-
-
+const { Header, Content } = Layout;
 
 const Home = () => {
-   
-    const [selectedLabel, setSelectedLabel] = useState(null);
-    const [filteredData, setFilteredData] = useState([]);
-  
-    useEffect(() => {
-      // Call API with the selected label when it changes
-      if (selectedLabel !== null) {
-        fetchDataFromApi(selectedLabel);
-      }
-    }, [selectedLabel]);
-  
-    const fetchDataFromApi = async (label) => {
-      try {
-        // Make API call to fetch filtered data based on the selected label
-        const response = await fetch(`http://127.0.0.1:5000/api/search_post?label=${label}`);
-        const data = await response.json();
-        setFilteredData(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    const handleLabelChange = (event) => {
-      const label = event.target.value;
-      setSelectedLabel(label);
-    };
+  const [selectedLabel, setSelectedLabel] = useState(null);
+  const [filteredData, setFilteredData] = useState([]);
+  const [allData, setAllData] = useState([]);
   const [form1] = Form.useForm();
-  const [file, setfile] = useState();
-  const handlePublicKeyChange = (event) => {
-    const file = event.target.files[0];
-    setfile(file);
-  };
+  const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetchDataFromApi();
+  }, []);
+
+  useEffect(() => {
+    if (selectedLabel !== null) {
+      filterData(selectedLabel);
+    } else {
+      setFilteredData(allData); // Nếu không có label được chọn, hiển thị tất cả dữ liệu
+    }
+  }, [selectedLabel, allData]);
+
+  const fetchDataFromApi = async () => {
+    try {
+      const response = await axiosInstance.get('http://127.0.0.1:5000/api/get_posts');
+      setAllData(response.data.data);
+      setFilteredData(response.data.data); // Hiển thị tất cả dữ liệu khi component được tạo
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const filterData = (label) => {
+    const filtered = allData.filter(item => item.label === label);
+    setFilteredData(filtered);
+  };
+
+  const handleLabelChange = (event) => {
+    const label = event.target.value;
+    setSelectedLabel(label);
+  };
+
+  const handlePublicKeyChange = (event) => {
+    const file = event.target.files[0];
+    setFile(file);
+  };
+
   const showModal = () => {
     setOpen(true);
   };
@@ -65,14 +66,13 @@ const Home = () => {
       setOpen(false);
     }, 3000);
   };
+
   const handleCancel = () => {
     setOpen(false);
   };
+
   const navigation = useNavigate();
-  const [data, setData] = useState([])
-  useEffect(() => {
-    getData();
-  }, []);
+
   const axiosInstance = axios.create({
     baseURL: 'http://127.0.0.1:5000',
     headers: {
@@ -80,73 +80,65 @@ const Home = () => {
       'Content-Type': 'application/json',
     },
   });
-  const submit = async (e) => {
+
+  const submit = async () => {
     const value = form1.getFieldsValue();
-    console.log(value);
     const title = value.mytitle;
     const content = value.mycontent;
     const type = value.type;
+
     try {
       const response = await axiosInstance.post("api/create_post", {
         title,
         content,
         post_type: type,
-      })
-        .then((dat) => {
-          const formData = new FormData();
-          formData.append("file", file)
-          axios.post(`http://127.0.0.1:5000/api/upload_file?post_id=${dat.data.data.post_id}`, formData)
-          // console.log('test',dat);
-        });
+      }).then((dat) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        axios.post(`http://127.0.0.1:5000/api/upload_file?post_id=${dat.data.data.post_id}`, formData);
+      });
+
       if (response.data) {
         localStorage.setItem('accessToken', response.data);
-        message.success("đăng bài thành công");
-
+        message.success("Đăng bài thành công");
+        fetchDataFromApi(); // Làm mới dữ liệu sau khi đăng bài
       }
-    } catch {
-
+    } catch (error) {
+      console.error('Error submitting data:', error);
     }
   };
-  const getData = async () => {
-    axiosInstance.get('api/get_posts')
-      .then(response => {
-        setData(response.data.data);
-        console.log(response.data);
-      })
-      .catch(error => {
-        // Xử lý lỗi nếu có
-        console.error(error);
-      });
-  }
 
- 
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+  const getData = async () => {
+    try {
+      const response = await axiosInstance.get('api/get_posts');
+      setData(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const { colorBgContainer } = theme.useToken();
+
   return (
     <Layout style={{ height: '100vh' }}>
-      <Header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-
-      >
-      
-        <div className="demo-logo" />
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']} items={items1} />
+      <Header style={{ display: 'flex', alignItems: 'center' }}>
+        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
+          <Menu.Item key="Trang chủ" onClick={() => handleLabelChange({ target: allData})}>Trang chủ</Menu.Item>
+          <Menu.Item key="Tổ tự nhiên" onClick={() => handleLabelChange({ target: { value: 'Tổ tự nhiên' } })}>Tổ tự nhiên</Menu.Item>
+          <Menu.Item key="Tổ xã hội" onClick={() => handleLabelChange({ target: { value: 'Tổ xã hội' } })}>Tổ xã hội</Menu.Item>
+          <Menu.Item key="Tổ thể dục" onClick={() => handleLabelChange({ target: { value: 'Tổ thể dục' } })}>Tổ thể dục</Menu.Item>
+          <Menu.Item key="Tổ ngoại ngữ" onClick={() => handleLabelChange({ target: { value: 'Tổ ngoại ngữ' } })}>Tổ ngoại ngữ</Menu.Item>
+        </Menu>
         <div className='find' style={{ marginLeft: '400px' }}>
-          <form >
-            <Input placeholder='nhập nội dung tìm kiếm' type='text' />
-          </form>
+          <Form>
+            <Input placeholder='Nhập nội dung tìm kiếm' type='text' onChange={(e) => handleLabelChange({ target: { value: e.target.value } })} />
+          </Form>
         </div>
         <div background='#00FFFF'>
-          <Button >
-            Tìm kiếm
-          </Button>
+          <Button onClick={() => handleLabelChange({ target: { value: null } })}>Tìm kiếm</Button>
         </div>
         <div className='icon' theme="dark" style={{ marginLeft: '150px' }}>
-          <Button onClick={() => navigation('/')} >
+          <Button onClick={() => navigation('/')}>
             <UserOutlined style={{ color: '#000000', fontSize: '20px' }} />LogOut
           </Button>
         </div>
@@ -192,31 +184,13 @@ const Home = () => {
                   (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
                 }
                 options={[
-                  {
-                    value: 'Tổ tự nhiên',
-                    label: 'Tổ tự nhiên',
-                  },
-                  {
-                    value: 'Tổ xã hội',
-                    label: 'Tổ xã hội',
-                  },
-                  {
-                    value: 'Tổ ngoại ngữ',
-                    label: 'Tổ ngoại ngữ',
-                  },
-                  {
-                    value: 'Tổ thể dục',
-                    label: 'Tổ thể dục',
-                  },
-                  {
-                    value: 'Thông tin chung',
-                    label: 'Thông tin chung'
-                  },
-                  
+                  { value: 'Tổ tự nhiên', label: 'Tổ tự nhiên' },
+                  { value: 'Tổ xã hội', label: 'Tổ xã hội' },
+                  { value: 'Tổ ngoại ngữ', label: 'Tổ ngoại ngữ' },
+                  { value: 'Tổ thể dục', label: 'Tổ thể dục' },
+                  { value: 'Thông tin chung', label: 'Thông tin chung' },
                 ]}
-
               />
-                  items1(onClick={handleLabelChange});
             </Form.Item>
             <Form.Item name={'mycontent'}>
               <textarea placeholder='Nội dung bài viết' style={{ width: '650px', height: '450px' }} />
@@ -225,7 +199,6 @@ const Home = () => {
         </Modal>
       </>
       <Layout>
-
         <Layout
           style={{
             padding: '0 24px 24px',
@@ -248,31 +221,28 @@ const Home = () => {
               }}
             />
             <div>
-
-              {data.map(item => (
+              {filteredData.map(item => (
                 <Card title={item.title} style={{ paddingBottom: 25 }}>
                   <Row>
-                  <Row span={16} style={{margin:10}}>
-                    {item.content}
-                  </Row>
-                  <Row>
-                    {item.image.map((element, index) => (
-                      <Col span={8}>
-                        <img key={index} src={element} style={{ width: 200, height: 150 }} />
-                      </Col>
-                    ))}
-                  </Row>
+                    <Row span={16} style={{ margin: 10 }}>
+                      {item.content}
+                    </Row>
+                    <Row>
+                      {item.image.map((element, index) => (
+                        <Col span={8}>
+                          <img key={index} src={element} style={{ width: 200, height: 150 }} alt={`Image ${index}`} />
+                        </Col>
+                      ))}
+                    </Row>
                   </Row>
                 </Card>
               ))}
-
             </div>
           </Content>
         </Layout>
       </Layout>
     </Layout>
   );
-
 };
 
 export default Home;

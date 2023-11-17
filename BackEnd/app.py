@@ -8,6 +8,7 @@ from upload import test
 from api_control.register_api import api
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+
 def create_app():
     app = Flask(__name__)
     app.register_blueprint(api)
